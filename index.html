@@ -3,78 +3,259 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WK Poule 2026</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
+  <title>WK Poule 2026 🏆</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --groen: #00c853;
-      --donker: #0a0f0d;
-      --kaart: #111a14;
-      --rand: #1e2e21;
-      --tekst: #e8f5e0;
-      --grijs: #8a9e8d;
-      --rood: #ff3d3d;
-      --goud: #ffd600;
+      --oranje: #FF6B00;
+      --oranje-licht: #FF9A3C;
+      --oranje-glow: rgba(255,107,0,0.25);
+      --geel: #FFD600;
+      --rood: #E53935;
+      --wit: #FFF8F0;
+      --achtergrond: #1A0A00;
+      --kaart: #2A1500;
+      --kaart2: #331A00;
+      --rand: #4A2800;
+      --tekst: #FFF8F0;
+      --tekst-dim: #C8956A;
+      --groen: #00C853;
+      --blauw: #2979FF;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: var(--donker);
+      background: var(--achtergrond);
       color: var(--tekst);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Nunito', sans-serif;
       min-height: 100vh;
+      overflow-x: hidden;
     }
+
+    /* ── ACHTERGROND PATROON ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255,107,0,0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255,214,0,0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── INLOG ── */
+    #scherm-inlog {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .inlog-kaart {
+      background: var(--kaart);
+      border: 2px solid var(--rand);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      box-shadow: 0 0 60px rgba(255,107,0,0.15);
+      animation: opkomen .5s ease;
+    }
+
+    @keyframes opkomen {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .inlog-trofee {
+      font-size: 4rem;
+      margin-bottom: .5rem;
+      animation: stuiteren 2s ease-in-out infinite;
+    }
+    @keyframes stuiteren {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .inlog-titel {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 2.8rem;
+      color: var(--oranje);
+      text-shadow: 0 0 30px var(--oranje-glow);
+      line-height: 1;
+      margin-bottom: .3rem;
+    }
+    .inlog-titel span { color: var(--geel); }
+    .inlog-sub { color: var(--tekst-dim); font-size: .95rem; margin-bottom: 2rem; }
+
+    /* AVATAR KIEZER */
+    .avatar-kiezer-label {
+      font-size: .8rem;
+      color: var(--tekst-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: .6rem;
+    }
+    .avatar-grid {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 1.2rem;
+    }
+    .avatar-optie {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--rand);
+      background: var(--kaart2);
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .15s;
+    }
+    .avatar-optie:hover { border-color: var(--oranje); transform: scale(1.1); }
+    .avatar-optie.gekozen { border-color: var(--oranje); background: var(--oranje-glow); box-shadow: 0 0 12px var(--oranje-glow); }
+
+    .kleur-grid {
+      display: flex;
+      gap: .4rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .kleur-optie {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .kleur-optie:hover { transform: scale(1.2); }
+    .kleur-optie.gekozen { border-color: white; box-shadow: 0 0 8px rgba(255,255,255,.4); }
+
+    .inlog-input {
+      width: 100%;
+      background: var(--kaart2);
+      border: 1.5px solid var(--rand);
+      border-radius: 12px;
+      padding: .85rem 1rem;
+      color: var(--tekst);
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      margin-bottom: .8rem;
+      transition: border-color .2s;
+    }
+    .inlog-input:focus { outline: none; border-color: var(--oranje); }
+
+    .btn-oranje {
+      width: 100%;
+      background: linear-gradient(135deg, var(--oranje), var(--oranje-licht));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: .95rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all .2s;
+      box-shadow: 0 4px 20px var(--oranje-glow);
+    }
+    .btn-oranje:hover { transform: translateY(-2px); box-shadow: 0 8px 28px var(--oranje-glow); }
+    .btn-oranje:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    .fout { color: #ff6b6b; font-size: .85rem; margin-top: .6rem; }
 
     /* ── HEADER ── */
     header {
-      background: linear-gradient(135deg, #0a2e0f 0%, #0a0f0d 60%);
-      border-bottom: 2px solid var(--groen);
-      padding: 1.2rem 2rem;
+      background: linear-gradient(180deg, #2A1500 0%, rgba(26,10,0,0) 100%);
+      padding: 1rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--rand);
     }
-    header h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2rem;
-      letter-spacing: 3px;
-      color: var(--groen);
+
+    .header-logo {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.5rem;
+      color: var(--oranje);
     }
-    header h1 span { color: var(--goud); }
-    #user-info { font-size: .85rem; color: var(--grijs); }
-    #user-info strong { color: var(--tekst); }
-    #btn-uitloggen {
-      background: none; border: 1px solid var(--rand);
-      color: var(--grijs); padding: .4rem .9rem;
-      border-radius: 6px; cursor: pointer; font-size: .8rem;
+    .header-logo span { color: var(--geel); }
+
+    .header-user {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+    }
+    .user-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--oranje);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .user-naam { font-weight: 700; font-size: .9rem; }
+
+    .btn-uitloggen {
+      background: none;
+      border: 1px solid var(--rand);
+      color: var(--tekst-dim);
+      padding: .35rem .8rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: .8rem;
+      font-family: 'Nunito', sans-serif;
       transition: all .2s;
     }
-    #btn-uitloggen:hover { border-color: var(--rood); color: var(--rood); }
+    .btn-uitloggen:hover { border-color: var(--rood); color: var(--rood); }
 
-    /* ── NAV TABS ── */
+    /* ── COUNTDOWN ── */
+    .countdown-banner {
+      background: linear-gradient(135deg, #FF6B00, #CC4400);
+      padding: .8rem 1.5rem;
+      text-align: center;
+      font-weight: 700;
+      font-size: .9rem;
+      letter-spacing: .5px;
+    }
+    .countdown-banner .tijd {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.1rem;
+      color: var(--geel);
+    }
+
+    /* ── TABS ── */
     nav {
       display: flex;
-      gap: .5rem;
-      padding: 1rem 2rem 0;
-      border-bottom: 1px solid var(--rand);
+      gap: .3rem;
+      padding: 1rem 1.5rem 0;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
+    nav::-webkit-scrollbar { display: none; }
+
     .tab {
-      padding: .6rem 1.4rem;
-      border-radius: 8px 8px 0 0;
+      padding: .6rem 1.2rem;
+      border-radius: 10px 10px 0 0;
       border: 1px solid transparent;
       border-bottom: none;
       background: none;
-      color: var(--grijs);
-      font-family: 'DM Sans', sans-serif;
+      color: var(--tekst-dim);
+      font-family: 'Nunito', sans-serif;
       font-size: .9rem;
+      font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
       transition: all .2s;
@@ -83,745 +264,1005 @@
     .tab.actief {
       background: var(--kaart);
       border-color: var(--rand);
-      color: var(--groen);
-      font-weight: 600;
+      color: var(--oranje);
     }
 
     /* ── PAGINA's ── */
-    .pagina { display: none; padding: 2rem; max-width: 900px; margin: 0 auto; }
-    .pagina.actief { display: block; }
-
-    /* ── INLOG SCHERM ── */
-    #scherm-inlog {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 2rem;
-      background: radial-gradient(ellipse at 50% 0%, #0d2e12 0%, var(--donker) 70%);
-    }
-    .inlog-kaart {
-      background: var(--kaart);
-      border: 1px solid var(--rand);
-      border-radius: 16px;
-      padding: 3rem 2.5rem;
-      width: 100%;
-      max-width: 420px;
-      text-align: center;
-    }
-    .inlog-kaart .logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 3.5rem;
-      letter-spacing: 4px;
-      color: var(--groen);
-      line-height: 1;
-    }
-    .inlog-kaart .logo span { color: var(--goud); }
-    .inlog-kaart p { color: var(--grijs); margin: .5rem 0 2rem; font-size: .9rem; }
-    .inlog-kaart input {
-      width: 100%;
-      background: var(--donker);
-      border: 1px solid var(--rand);
-      border-radius: 8px;
-      padding: .85rem 1rem;
-      color: var(--tekst);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 1rem;
-      margin-bottom: .8rem;
-      transition: border-color .2s;
-    }
-    .inlog-kaart input:focus { outline: none; border-color: var(--groen); }
-    .btn-primary {
-      width: 100%;
-      background: var(--groen);
-      color: var(--donker);
-      border: none;
-      border-radius: 8px;
-      padding: .9rem;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all .2s;
-      margin-top: .4rem;
-    }
-    .btn-primary:hover { background: #00e060; transform: translateY(-1px); }
-    .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-    .fout-melding {
-      color: var(--rood);
-      font-size: .85rem;
-      margin-top: .8rem;
-      min-height: 1.2em;
-    }
+    .pagina { display: none; padding: 1.5rem; max-width: 860px; margin: 0 auto; }
+    .pagina.actief { display: block; animation: opkomen .3s ease; }
 
     /* ── KAARTEN ── */
     .kaart {
       background: var(--kaart);
       border: 1px solid var(--rand);
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 1.5rem;
       margin-bottom: 1.2rem;
     }
-    .kaart-titel {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.3rem;
-      letter-spacing: 2px;
-      color: var(--groen);
-      margin-bottom: 1rem;
+    .kaart-header {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1rem;
+      color: var(--oranje);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
     }
 
+    /* ── PUNTEN UITLEG ── */
+    .punten-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: .8rem;
+    }
+    .punt-item {
+      background: var(--kaart2);
+      border: 1px solid var(--rand);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .punt-getal {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 2rem;
+      color: var(--geel);
+    }
+    .punt-label { font-size: .8rem; color: var(--tekst-dim); margin-top: .2rem; }
+
     /* ── WEDSTRIJD RIJEN ── */
+    .fase-titel {
+      font-size: .75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--tekst-dim);
+      margin: 1.5rem 0 .8rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .fase-titel::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--rand);
+    }
+
     .wedstrijd-rij {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      gap: 1rem;
-      padding: 1rem 0;
+      gap: .8rem;
+      padding: .9rem 0;
       border-bottom: 1px solid var(--rand);
+      position: relative;
     }
     .wedstrijd-rij:last-child { border-bottom: none; }
-    .team { font-weight: 500; }
-    .team.thuis { text-align: right; }
-    .team.uit { text-align: left; }
-    .score-inputs {
+    .wedstrijd-rij.gespeeld { opacity: .7; }
+
+    .team-naam { font-weight: 700; font-size: .95rem; }
+    .team-naam.thuis { text-align: right; }
+    .team-naam.uit { text-align: left; }
+
+    .score-wrap {
       display: flex;
       align-items: center;
       gap: .4rem;
     }
-    .score-input {
-      width: 48px;
-      height: 48px;
-      background: var(--donker);
-      border: 1px solid var(--rand);
-      border-radius: 8px;
+    .score-in {
+      width: 46px; height: 46px;
+      background: var(--kaart2);
+      border: 1.5px solid var(--rand);
+      border-radius: 10px;
       color: var(--tekst);
-      font-size: 1.3rem;
-      font-weight: 600;
+      font-size: 1.2rem;
+      font-weight: 800;
       text-align: center;
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: 'Archivo Black', sans-serif;
       transition: border-color .2s;
     }
-    .score-input:focus { outline: none; border-color: var(--groen); }
-    .score-divider { color: var(--grijs); font-size: 1.2rem; }
+    .score-in:focus { outline: none; border-color: var(--oranje); }
+    .score-in:disabled { opacity: .5; cursor: not-allowed; }
+    .score-dash { color: var(--tekst-dim); font-weight: 800; }
+
+    /* Uitslag badge */
+    .uitslag-badge {
+      background: var(--kaart2);
+      border: 1px solid var(--rand);
+      border-radius: 8px;
+      padding: .3rem .7rem;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: .9rem;
+      color: var(--geel);
+    }
+
+    /* Punten indicator */
+    .punt-indicator {
+      position: absolute;
+      right: 0;
+      top: .5rem;
+      font-size: .75rem;
+      font-weight: 800;
+      padding: .15rem .5rem;
+      border-radius: 20px;
+    }
+    .punt-3 { background: rgba(0,200,83,.15); color: var(--groen); }
+    .punt-1 { background: rgba(41,121,255,.15); color: var(--blauw); }
+    .punt-0 { background: rgba(229,57,53,.1); color: #ff6b6b; }
 
     /* ── EXTRA VOORSPELLINGEN ── */
+    .extra-veld { margin-bottom: 1rem; }
     .extra-veld label {
       display: block;
-      color: var(--grijs);
       font-size: .85rem;
+      color: var(--tekst-dim);
+      font-weight: 700;
       margin-bottom: .4rem;
     }
     .extra-veld input {
       width: 100%;
-      background: var(--donker);
-      border: 1px solid var(--rand);
-      border-radius: 8px;
+      background: var(--kaart2);
+      border: 1.5px solid var(--rand);
+      border-radius: 10px;
       padding: .8rem 1rem;
       color: var(--tekst);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Nunito', sans-serif;
       font-size: 1rem;
-      margin-bottom: 1rem;
+      font-weight: 600;
       transition: border-color .2s;
     }
-    .extra-veld input:focus { outline: none; border-color: var(--groen); }
+    .extra-veld input:focus { outline: none; border-color: var(--oranje); }
 
-    /* ── STAND TABEL ── */
-    .stand-tabel {
-      width: 100%;
-      border-collapse: collapse;
+    .btn-opslaan {
+      background: linear-gradient(135deg, var(--oranje), var(--oranje-licht));
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: .8rem 1.8rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: all .2s;
+      box-shadow: 0 4px 16px var(--oranje-glow);
+    }
+    .btn-opslaan:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--oranje-glow); }
+    .btn-opslaan:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    .succes-msg { color: var(--groen); font-size: .85rem; font-weight: 700; margin-top: .5rem; }
+
+    /* ── STAND ── */
+    .stand-rij {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: .9rem 0;
+      border-bottom: 1px solid var(--rand);
+      transition: background .15s;
+    }
+    .stand-rij:last-child { border-bottom: none; }
+    .stand-rij:hover { background: rgba(255,107,0,.04); border-radius: 8px; }
+
+    .stand-plek {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.3rem;
+      width: 32px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .plek-1 { color: var(--geel); }
+    .plek-2 { color: #C0C0C0; }
+    .plek-3 { color: #CD7F32; }
+    .plek-rest { color: var(--tekst-dim); font-size: 1rem; }
+
+    .stand-avatar {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      border: 2px solid var(--rand);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .stand-naam {
+      flex: 1;
+      font-weight: 700;
+    }
+    .stand-naam .jij { color: var(--oranje); font-size: .75rem; margin-left: .4rem; }
+
+    .stand-punten {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.4rem;
+      color: var(--oranje);
+    }
+    .stand-details {
+      font-size: .75rem;
+      color: var(--tekst-dim);
+      text-align: right;
+    }
+
+    /* ── MIJN VOORSPELLINGEN VERGELIJKING ── */
+    .vergelijk-rij {
+      display: grid;
+      grid-template-columns: 1fr auto auto auto 1fr;
+      align-items: center;
+      gap: .5rem;
+      padding: .7rem 0;
+      border-bottom: 1px solid var(--rand);
       font-size: .9rem;
     }
-    .stand-tabel th {
-      text-align: left;
-      padding: .7rem 1rem;
-      color: var(--grijs);
-      font-weight: 500;
-      border-bottom: 1px solid var(--rand);
-      font-size: .8rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .stand-tabel td {
-      padding: .8rem 1rem;
-      border-bottom: 1px solid var(--rand);
-    }
-    .stand-tabel tr:last-child td { border-bottom: none; }
-    .stand-tabel tr:hover td { background: rgba(0,200,83,.04); }
-    .plek {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.1rem;
-      width: 40px;
-    }
-    .plek-1 { color: var(--goud); }
-    .plek-2 { color: #ccc; }
-    .plek-3 { color: #cd7f32; }
-    .punten-badge {
-      background: var(--groen);
-      color: var(--donker);
-      font-weight: 700;
+    .vergelijk-rij:last-child { border-bottom: none; }
+    .vergelijk-team { font-weight: 600; }
+    .vergelijk-team.thuis { text-align: right; }
+    .vergelijk-score {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: .95rem;
       padding: .2rem .6rem;
+      border-radius: 6px;
+      text-align: center;
+      min-width: 50px;
+    }
+    .score-echt { background: rgba(255,214,0,.15); color: var(--geel); }
+    .score-mijn { background: var(--kaart2); color: var(--tekst-dim); }
+    .vergelijk-punt {
+      font-size: .75rem;
+      font-weight: 800;
+      padding: .15rem .5rem;
       border-radius: 20px;
-      font-size: .85rem;
+      min-width: 30px;
+      text-align: center;
     }
 
     /* ── ADMIN ── */
-    .admin-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-    @media(max-width: 600px) { .admin-grid { grid-template-columns: 1fr; } }
-    .admin-input-rij {
+    .admin-veld {
       display: flex;
       gap: .5rem;
-      margin-bottom: .8rem;
+      margin-bottom: .7rem;
+      flex-wrap: wrap;
     }
-    .admin-input-rij input, .admin-input-rij select {
+    .admin-veld input, .admin-veld select {
       flex: 1;
-      background: var(--donker);
-      border: 1px solid var(--rand);
-      border-radius: 8px;
+      min-width: 120px;
+      background: var(--kaart2);
+      border: 1.5px solid var(--rand);
+      border-radius: 10px;
       padding: .7rem .9rem;
       color: var(--tekst);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Nunito', sans-serif;
       font-size: .9rem;
     }
-    .admin-input-rij input:focus, .admin-input-rij select:focus {
-      outline: none; border-color: var(--groen);
-    }
-    .admin-input-rij select option { background: var(--kaart); }
-    .btn-small {
-      background: var(--groen);
-      color: var(--donker);
+    .admin-veld input:focus, .admin-veld select:focus { outline: none; border-color: var(--oranje); }
+    .admin-veld select option { background: var(--kaart); }
+
+    .btn-klein {
+      background: linear-gradient(135deg, var(--oranje), var(--oranje-licht));
+      color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       padding: .7rem 1.2rem;
-      font-weight: 600;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
       cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
       white-space: nowrap;
-      transition: background .2s;
-    }
-    .btn-small:hover { background: #00e060; }
-    .btn-danger {
-      background: none;
-      border: 1px solid var(--rand);
-      color: var(--grijs);
-      border-radius: 6px;
-      padding: .4rem .7rem;
-      cursor: pointer;
-      font-size: .8rem;
       transition: all .2s;
     }
-    .btn-danger:hover { border-color: var(--rood); color: var(--rood); }
+    .btn-klein:hover { opacity: .9; }
 
-    .wedstrijd-lijst-item {
+    .btn-verwijder {
+      background: none;
+      border: 1px solid var(--rand);
+      color: var(--tekst-dim);
+      border-radius: 8px;
+      padding: .4rem .7rem;
+      cursor: pointer;
+      font-size: .85rem;
+      transition: all .2s;
+    }
+    .btn-verwijder:hover { border-color: var(--rood); color: var(--rood); }
+
+    .admin-w-rij {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: .7rem 0;
       border-bottom: 1px solid var(--rand);
-      font-size: .9rem;
-      gap: 1rem;
+      gap: .8rem;
+      flex-wrap: wrap;
     }
-    .wedstrijd-lijst-item:last-child { border-bottom: none; }
-    .score-inline {
-      display: flex;
-      gap: .4rem;
-      align-items: center;
-    }
-    .score-inline input {
-      width: 40px;
-      height: 36px;
-      background: var(--donker);
-      border: 1px solid var(--rand);
-      border-radius: 6px;
-      color: var(--tekst);
-      text-align: center;
-      font-size: 1rem;
-      font-weight: 600;
-    }
-    .score-inline input:focus { outline: none; border-color: var(--groen); }
-    .badge-fase {
+    .admin-w-rij:last-child { border-bottom: none; }
+
+    .fase-chip {
       font-size: .7rem;
       padding: .2rem .5rem;
       border-radius: 4px;
-      background: rgba(0,200,83,.12);
-      color: var(--groen);
+      background: rgba(255,107,0,.15);
+      color: var(--oranje);
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: .5px;
+    }
+
+    .score-invoer {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .score-invoer input {
+      width: 42px; height: 38px;
+      background: var(--kaart2);
+      border: 1px solid var(--rand);
+      border-radius: 8px;
+      color: var(--tekst);
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 800;
+      font-family: 'Archivo Black', sans-serif;
+    }
+    .score-invoer input:focus { outline: none; border-color: var(--oranje); }
+
+    .ww-scherm {
+      max-width: 380px;
+      margin: 2rem auto;
     }
 
     /* ── LOADING ── */
     .loading {
       text-align: center;
-      padding: 3rem;
-      color: var(--grijs);
-      font-size: .9rem;
+      padding: 2.5rem;
+      color: var(--tekst-dim);
     }
     .spinner {
       display: inline-block;
-      width: 24px; height: 24px;
-      border: 2px solid var(--rand);
-      border-top-color: var(--groen);
+      width: 28px; height: 28px;
+      border: 3px solid var(--rand);
+      border-top-color: var(--oranje);
       border-radius: 50%;
       animation: spin .7s linear infinite;
-      margin-bottom: .5rem;
+      margin-bottom: .6rem;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .succes { color: var(--groen); font-size: .85rem; margin-top: .5rem; }
-    .sectie-titel {
-      font-size: .75rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--grijs);
-      margin: 1.5rem 0 .8rem;
-    }
-    .leeg { color: var(--grijs); font-size: .9rem; padding: 1rem 0; }
+    .leeg { color: var(--tekst-dim); font-size: .9rem; padding: 1rem 0; }
 
-    #admin-wachtwoord-scherm {
-      max-width: 400px;
-      margin: 3rem auto;
+    @media (max-width: 500px) {
+      .inlog-kaart { padding: 2rem 1.5rem; }
+      .inlog-titel { font-size: 2.2rem; }
+      .wedstrijd-rij { gap: .4rem; }
+      .team-naam { font-size: .85rem; }
+      .score-in { width: 40px; height: 40px; font-size: 1rem; }
+      .vergelijk-rij { grid-template-columns: 1fr auto auto auto 1fr; font-size: .8rem; }
     }
   </style>
 </head>
 <body>
 
-<!-- INLOG SCHERM -->
+<!-- INLOG -->
 <div id="scherm-inlog">
   <div class="inlog-kaart">
-    <div class="logo">WK<span>26</span></div>
-    <p>Vul je naam en e-mailadres in om mee te doen</p>
-    <input type="text" id="inlog-naam" placeholder="Je naam" autocomplete="name" />
-    <input type="email" id="inlog-email" placeholder="Je e-mailadres" autocomplete="email" />
-    <button class="btn-primary" id="btn-inloggen">Meedoen →</button>
-    <div class="fout-melding" id="inlog-fout"></div>
+    <div class="inlog-trofee">🏆</div>
+    <div class="inlog-titel">WK<span>26</span></div>
+    <p class="inlog-sub">Doe mee met de poule en voorspel jij het beste?</p>
+
+    <p class="avatar-kiezer-label">Kies je emoji</p>
+    <div class="avatar-grid" id="emoji-grid"></div>
+
+    <p class="avatar-kiezer-label">Kies je kleur</p>
+    <div class="kleur-grid" id="kleur-grid"></div>
+
+    <input class="inlog-input" type="text" id="inlog-naam" placeholder="Je naam" autocomplete="name" />
+    <input class="inlog-input" type="email" id="inlog-email" placeholder="Je e-mailadres" autocomplete="email" />
+    <button class="btn-oranje" id="btn-inloggen">Meedoen aan de poule →</button>
+    <div class="fout" id="inlog-fout"></div>
   </div>
 </div>
 
-<!-- HOOFD APP -->
-<div id="app" style="display:none">
+<!-- APP -->
+<div id="app" style="display:none; position:relative; z-index:1">
+  <div class="countdown-banner" id="countdown-banner"></div>
+
   <header>
-    <h1>WK<span>26</span> POULE</h1>
-    <div style="display:flex;align-items:center;gap:1rem">
-      <div id="user-info"></div>
-      <button id="btn-uitloggen">Uitloggen</button>
+    <div class="header-logo">WK<span>26</span> POULE</div>
+    <div class="header-user">
+      <div class="user-avatar" id="header-avatar"></div>
+      <span class="user-naam" id="header-naam"></span>
+      <button class="btn-uitloggen" id="btn-uitloggen">Uitloggen</button>
     </div>
   </header>
 
   <nav>
     <button class="tab actief" data-tab="voorspellingen">⚽ Voorspellingen</button>
+    <button class="tab" data-tab="vergelijk">🔍 Mijn scores</button>
     <button class="tab" data-tab="stand">🏆 Stand</button>
+    <button class="tab" data-tab="uitleg">📋 Regels</button>
     <button class="tab" data-tab="admin">⚙️ Admin</button>
   </nav>
 
   <!-- VOORSPELLINGEN -->
   <div class="pagina actief" id="tab-voorspellingen">
     <div class="kaart">
-      <div class="kaart-titel">🏅 Kampioen & Topscorer</div>
+      <div class="kaart-header">🌟 Bonus voorspellingen</div>
       <div class="extra-veld">
-        <label>Wie wordt wereldkampioen?</label>
+        <label>🏆 Wie wordt wereldkampioen?</label>
         <input type="text" id="input-kampioen" placeholder="bijv. Nederland" />
       </div>
       <div class="extra-veld">
-        <label>Wie wordt topscorer?</label>
+        <label>👟 Wie wordt topscorer?</label>
         <input type="text" id="input-topscorer" placeholder="bijv. Mbappé" />
       </div>
-      <button class="btn-primary" id="btn-opslaan-extra" style="width:auto;padding:.7rem 1.8rem">Opslaan</button>
-      <div class="succes" id="extra-succes"></div>
+      <button class="btn-opslaan" id="btn-opslaan-extra">Opslaan</button>
+      <div class="succes-msg" id="extra-succes"></div>
     </div>
 
     <div id="wedstrijden-container">
       <div class="loading"><div class="spinner"></div><br>Wedstrijden laden...</div>
+    </div>
+
+    <div id="opslaan-wrap" style="display:none;margin-top:.5rem">
+      <button class="btn-opslaan" id="btn-opslaan-alles" style="width:100%">💾 Alle voorspellingen opslaan</button>
+      <div class="succes-msg" id="voorspel-succes"></div>
+    </div>
+  </div>
+
+  <!-- VERGELIJK -->
+  <div class="pagina" id="tab-vergelijk">
+    <div class="kaart">
+      <div class="kaart-header">🔍 Mijn voorspellingen vs. werkelijkheid</div>
+      <div id="vergelijk-container">
+        <div class="loading"><div class="spinner"></div></div>
+      </div>
     </div>
   </div>
 
   <!-- STAND -->
   <div class="pagina" id="tab-stand">
     <div class="kaart">
-      <div class="kaart-titel">🏆 Klassement</div>
+      <div class="kaart-header">🏆 Klassement</div>
       <div id="stand-container">
-        <div class="loading"><div class="spinner"></div><br>Stand laden...</div>
+        <div class="loading"><div class="spinner"></div></div>
       </div>
     </div>
-    <p style="color:var(--grijs);font-size:.8rem;margin-top:1rem">
-      Punten: exacte uitslag = 3pt · juiste winnaar/gelijkspel = 1pt · juiste kampioen = 10pt · juiste topscorer = 5pt
-    </p>
+    <div class="kaart">
+      <div class="kaart-header">🌟 Bonus voorspellingen stand</div>
+      <div id="bonus-container"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+  </div>
+
+  <!-- UITLEG -->
+  <div class="pagina" id="tab-uitleg">
+    <div class="kaart">
+      <div class="kaart-header">📋 Puntensysteem</div>
+      <div class="punten-grid">
+        <div class="punt-item">
+          <div class="punt-getal">3</div>
+          <div class="punt-label">Exacte uitslag geraden</div>
+        </div>
+        <div class="punt-item">
+          <div class="punt-getal">1</div>
+          <div class="punt-label">Juiste winnaar of gelijkspel</div>
+        </div>
+        <div class="punt-item">
+          <div class="punt-getal">10</div>
+          <div class="punt-label">Wereldkampioen correct</div>
+        </div>
+        <div class="punt-item">
+          <div class="punt-getal">5</div>
+          <div class="punt-label">Topscorer correct</div>
+        </div>
+        <div class="punt-item">
+          <div class="punt-getal">0</div>
+          <div class="punt-label">Fout geraden</div>
+        </div>
+      </div>
+    </div>
+    <div class="kaart">
+      <div class="kaart-header">📌 Regels</div>
+      <ul style="color:var(--tekst-dim);font-size:.9rem;line-height:2;padding-left:1.2rem">
+        <li>Voorspellingen zijn vergrendeld zodra een wedstrijd begint</li>
+        <li>Je kunt je voorspellingen aanpassen zolang de wedstrijd nog niet gespeeld is</li>
+        <li>De admin voert de officiële uitslagen in</li>
+        <li>Bij gelijke punten wint degene met de meeste exacte uitslagen</li>
+        <li>Bonuspunten worden verdeeld na het toernooi</li>
+      </ul>
+    </div>
   </div>
 
   <!-- ADMIN -->
   <div class="pagina" id="tab-admin">
-    <div id="admin-wachtwoord-scherm" class="kaart" style="display:none">
-      <div class="kaart-titel">🔒 Admin toegang</div>
-      <input type="password" id="admin-ww-input" placeholder="Adminwachtwoord" style="width:100%;background:var(--donker);border:1px solid var(--rand);border-radius:8px;padding:.8rem 1rem;color:var(--tekst);font-family:'DM Sans',sans-serif;font-size:1rem;margin-bottom:.8rem" />
-      <button class="btn-primary" id="btn-admin-inloggen">Inloggen</button>
-      <div class="fout-melding" id="admin-fout"></div>
+    <div class="kaart ww-scherm" id="admin-login-kaart">
+      <div class="kaart-header">🔒 Admin toegang</div>
+      <input type="password" id="admin-ww" placeholder="Wachtwoord"
+        style="width:100%;background:var(--kaart2);border:1.5px solid var(--rand);border-radius:10px;padding:.8rem 1rem;color:var(--tekst);font-family:'Nunito',sans-serif;font-size:1rem;margin-bottom:.8rem" />
+      <button class="btn-opslaan" style="width:100%" id="btn-admin-in">Inloggen</button>
+      <div class="fout" id="admin-fout"></div>
     </div>
 
-    <div id="admin-inhoud" style="display:none">
-      <!-- Wedstrijd toevoegen -->
+    <div id="admin-paneel" style="display:none">
       <div class="kaart">
-        <div class="kaart-titel">➕ Wedstrijd toevoegen</div>
-        <div class="admin-input-rij">
-          <input type="text" id="w-thuis" placeholder="Thuisteam" />
-          <input type="text" id="w-uit" placeholder="Uitteam" />
+        <div class="kaart-header">➕ Wedstrijd toevoegen</div>
+        <div class="admin-veld">
+          <input type="text" id="w-thuis" placeholder="Thuisteam (bijv. Nederland)" />
+          <input type="text" id="w-uit" placeholder="Uitteam (bijv. Duitsland)" />
         </div>
-        <div class="admin-input-rij">
+        <div class="admin-veld">
           <input type="datetime-local" id="w-datum" />
           <select id="w-fase">
             <option value="groep">Groepsfase</option>
             <option value="achtste">Achtste finale</option>
             <option value="kwart">Kwartfinale</option>
             <option value="halve">Halve finale</option>
+            <option value="derde">3e plaats</option>
             <option value="finale">Finale</option>
           </select>
-          <button class="btn-small" id="btn-wedstrijd-toevoegen">Toevoegen</button>
+          <button class="btn-klein" id="btn-w-toevoegen">Toevoegen</button>
         </div>
-        <div class="succes" id="wedstrijd-succes"></div>
+        <div class="succes-msg" id="w-succes"></div>
       </div>
 
-      <!-- Uitslagen invoeren -->
       <div class="kaart">
-        <div class="kaart-titel">📋 Uitslagen invoeren</div>
-        <div id="admin-wedstrijden-lijst">
-          <div class="loading"><div class="spinner"></div></div>
+        <div class="kaart-header">📝 Uitslagen invoeren</div>
+        <div id="admin-lijst"><div class="loading"><div class="spinner"></div></div></div>
+      </div>
+
+      <div class="kaart">
+        <div class="kaart-header">🌟 Officiële kampioen & topscorer</div>
+        <div class="extra-veld">
+          <label>Officiële wereldkampioen</label>
+          <input type="text" id="admin-kampioen" placeholder="bijv. Nederland" />
         </div>
+        <div class="extra-veld">
+          <label>Officiële topscorer</label>
+          <input type="text" id="admin-topscorer" placeholder="bijv. Mbappé" />
+        </div>
+        <button class="btn-klein" id="btn-admin-bonus">Opslaan</button>
+        <div class="succes-msg" id="bonus-succes"></div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  // ─── CONFIG ───────────────────────────────────────────────
-  const SUPABASE_URL = 'https://ikifswrresjqurgtwpay.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_dcLU64VdYPJOoAyMwVOOTA_nchMYFv_';
-  const ADMIN_WACHTWOORD = 'admin123'; // ← verander dit naar iets eigens!
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+const SUPABASE_URL  = 'https://ikifswrresjqurgtwpay.supabase.co';
+const SUPABASE_KEY  = 'sb_publishable_dcLU64VdYPJOoAyMwVOOTA_nchMYFv_';
+const ADMIN_WW      = 'admin123'; // ← pas dit aan!
+const WK_START      = new Date('2026-06-11T18:00:00'); // WK 2026 opening
 
-  const { createClient } = supabase;
-  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  let huidigeDeelnemer = null;
-  let adminIngelogd = false;
+const EMOJIS  = ['⚽','🦁','🦅','🐯','🦊','🐉','🌟','🔥','💪','👑','🎯','🚀'];
+const KLEUREN = ['#FF6B00','#FFD600','#E53935','#00C853','#2979FF','#AA00FF','#FF4081','#00BCD4','#FF6F00','#795548'];
 
-  // ─── INLOG ────────────────────────────────────────────────
-  const opgeslagen = localStorage.getItem('wk_deelnemer');
-  if (opgeslagen) {
-    huidigeDeelnemer = JSON.parse(opgeslagen);
-    toonApp();
+let deelnemer   = null;
+let adminIn     = false;
+let gekozenEmoji = '⚽';
+let gekozenKleur = '#FF6B00';
+
+// ─── AVATAR KIEZER ────────────────────────────────────────────────────────────
+const emojiGrid  = document.getElementById('emoji-grid');
+const kleurGrid  = document.getElementById('kleur-grid');
+
+EMOJIS.forEach((e, i) => {
+  const el = document.createElement('button');
+  el.className = 'avatar-optie' + (i === 0 ? ' gekozen' : '');
+  el.textContent = e;
+  el.onclick = () => {
+    document.querySelectorAll('.avatar-optie').forEach(x => x.classList.remove('gekozen'));
+    el.classList.add('gekozen');
+    gekozenEmoji = e;
+  };
+  emojiGrid.appendChild(el);
+});
+
+KLEUREN.forEach((k, i) => {
+  const el = document.createElement('button');
+  el.className = 'kleur-optie' + (i === 0 ? ' gekozen' : '');
+  el.style.background = k;
+  el.onclick = () => {
+    document.querySelectorAll('.kleur-optie').forEach(x => x.classList.remove('gekozen'));
+    el.classList.add('gekozen');
+    gekozenKleur = k;
+  };
+  kleurGrid.appendChild(el);
+});
+
+// ─── INLOG ────────────────────────────────────────────────────────────────────
+const opgeslagen = localStorage.getItem('wk26_deelnemer');
+if (opgeslagen) { deelnemer = JSON.parse(opgeslagen); toonApp(); }
+
+document.getElementById('btn-inloggen').addEventListener('click', async () => {
+  const naam  = document.getElementById('inlog-naam').value.trim();
+  const email = document.getElementById('inlog-email').value.trim().toLowerCase();
+  const fout  = document.getElementById('inlog-fout');
+  if (!naam || !email) { fout.textContent = 'Vul je naam en e-mailadres in.'; return; }
+  if (!email.includes('@')) { fout.textContent = 'Ongeldig e-mailadres.'; return; }
+  fout.textContent = '';
+  const btn = document.getElementById('btn-inloggen');
+  btn.disabled = true; btn.textContent = 'Bezig...';
+
+  let { data: bestaand } = await db.from('deelnemers').select('*').eq('email', email).single();
+  if (!bestaand) {
+    const { data: nieuw, error } = await db.from('deelnemers')
+      .insert({ naam, email, avatar_emoji: gekozenEmoji, avatar_kleur: gekozenKleur })
+      .select().single();
+    if (error) { fout.textContent = 'Fout bij aanmaken. Probeer opnieuw.'; btn.disabled = false; btn.textContent = 'Meedoen →'; return; }
+    bestaand = nieuw;
   }
 
-  document.getElementById('btn-inloggen').addEventListener('click', async () => {
-    const naam = document.getElementById('inlog-naam').value.trim();
-    const email = document.getElementById('inlog-email').value.trim().toLowerCase();
-    const fout = document.getElementById('inlog-fout');
+  deelnemer = bestaand;
+  localStorage.setItem('wk26_deelnemer', JSON.stringify(bestaand));
+  toonApp();
+});
 
-    if (!naam || !email) { fout.textContent = 'Vul je naam en e-mailadres in.'; return; }
-    if (!email.includes('@')) { fout.textContent = 'Vul een geldig e-mailadres in.'; return; }
+document.getElementById('btn-uitloggen').addEventListener('click', () => {
+  localStorage.removeItem('wk26_deelnemer');
+  deelnemer = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('scherm-inlog').style.display = 'flex';
+});
 
-    fout.textContent = '';
-    document.getElementById('btn-inloggen').disabled = true;
-    document.getElementById('btn-inloggen').textContent = 'Even wachten...';
+function toonApp() {
+  document.getElementById('scherm-inlog').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  const av = document.getElementById('header-avatar');
+  av.textContent = deelnemer.avatar_emoji || '⚽';
+  av.style.background = (deelnemer.avatar_kleur || '#FF6B00') + '33';
+  av.style.borderColor = deelnemer.avatar_kleur || '#FF6B00';
+  document.getElementById('header-naam').textContent = deelnemer.naam;
+  startCountdown();
+  laadVoorspellingen();
+}
 
-    // Bestaande deelnemer opzoeken of aanmaken
-    let { data: bestaand } = await db.from('deelnemers').select('*').eq('email', email).single();
+// ─── COUNTDOWN ────────────────────────────────────────────────────────────────
+function startCountdown() {
+  function update() {
+    const nu = new Date();
+    const diff = WK_START - nu;
+    const banner = document.getElementById('countdown-banner');
+    if (diff <= 0) { banner.textContent = '⚽ Het WK 2026 is begonnen!'; return; }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    banner.innerHTML = `⏳ WK 2026 start over <span class="tijd">${d}d ${h}u ${m}m ${s}s</span>`;
+  }
+  update();
+  setInterval(update, 1000);
+}
 
-    if (!bestaand) {
-      const { data: nieuw, error } = await db.from('deelnemers').insert({ naam, email }).select().single();
-      if (error) {
-        fout.textContent = 'Er ging iets mis. Probeer opnieuw.';
-        document.getElementById('btn-inloggen').disabled = false;
-        document.getElementById('btn-inloggen').textContent = 'Meedoen →';
-        return;
-      }
-      bestaand = nieuw;
-    }
-
-    huidigeDeelnemer = bestaand;
-    localStorage.setItem('wk_deelnemer', JSON.stringify(bestaand));
-    toonApp();
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('actief'));
+    document.querySelectorAll('.pagina').forEach(p => p.classList.remove('actief'));
+    tab.classList.add('actief');
+    const id = 'tab-' + tab.dataset.tab;
+    document.getElementById(id).classList.add('actief');
+    if (tab.dataset.tab === 'stand')    { laadStand(); }
+    if (tab.dataset.tab === 'vergelijk'){ laadVergelijk(); }
+    if (tab.dataset.tab === 'admin')    { laadAdminScherm(); }
   });
+});
 
-  document.getElementById('btn-uitloggen').addEventListener('click', () => {
-    localStorage.removeItem('wk_deelnemer');
-    huidigeDeelnemer = null;
-    document.getElementById('app').style.display = 'none';
-    document.getElementById('scherm-inlog').style.display = 'flex';
-  });
+// ─── VOORSPELLINGEN ───────────────────────────────────────────────────────────
+async function laadVoorspellingen() {
+  const container = document.getElementById('wedstrijden-container');
+  const wrap = document.getElementById('opslaan-wrap');
 
-  function toonApp() {
-    document.getElementById('scherm-inlog').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    document.getElementById('user-info').innerHTML = `Ingelogd als <strong>${huidigeDeelnemer.naam}</strong>`;
-    laadVoorspellingen();
-    laadStand();
+  const { data: extra } = await db.from('extra_voorspellingen')
+    .select('*').eq('deelnemer_id', deelnemer.id).single();
+  if (extra) {
+    document.getElementById('input-kampioen').value = extra.kampioen || '';
+    document.getElementById('input-topscorer').value = extra.topscorer || '';
   }
 
-  // ─── TABS ─────────────────────────────────────────────────
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('actief'));
-      document.querySelectorAll('.pagina').forEach(p => p.classList.remove('actief'));
-      tab.classList.add('actief');
-      document.getElementById('tab-' + tab.dataset.tab).classList.add('actief');
+  const { data: wedstrijden } = await db.from('wedstrijden').select('*').order('speeldatum');
+  const { data: mijnV } = await db.from('voorspellingen')
+    .select('*').eq('deelnemer_id', deelnemer.id);
 
-      if (tab.dataset.tab === 'stand') laadStand();
-      if (tab.dataset.tab === 'admin') laadAdminScherm();
+  if (!wedstrijden || !wedstrijden.length) {
+    container.innerHTML = `<div class="kaart"><p class="leeg">Nog geen wedstrijden toegevoegd. De admin voegt ze toe!</p></div>`;
+    wrap.style.display = 'none';
+    return;
+  }
+
+  const vMap = {};
+  (mijnV || []).forEach(v => vMap[v.wedstrijd_id] = v);
+
+  const fases = ['groep','achtste','kwart','halve','derde','finale'];
+  const faseNamen = { groep:'Groepsfase', achtste:'Achtste finale', kwart:'Kwartfinale', halve:'Halve finale', derde:'3e Plaats', finale:'Finale' };
+
+  let html = '';
+  fases.forEach(fase => {
+    const lijst = wedstrijden.filter(w => w.fase === fase);
+    if (!lijst.length) return;
+    html += `<p class="fase-titel">${faseNamen[fase]}</p><div class="kaart">`;
+    lijst.forEach(w => {
+      const v = vMap[w.id] || {};
+      const locked = w.gespeeld;
+      html += `
+        <div class="wedstrijd-rij${locked?' gespeeld':''}">
+          <div class="team-naam thuis">${w.thuis_team}</div>
+          <div class="score-wrap">
+            <input class="score-in" type="number" min="0" max="20"
+              data-wid="${w.id}" data-kant="thuis"
+              value="${v.thuis_score ?? ''}" placeholder="–"
+              ${locked ? 'disabled' : ''} />
+            <span class="score-dash">–</span>
+            <input class="score-in" type="number" min="0" max="20"
+              data-wid="${w.id}" data-kant="uit"
+              value="${v.uit_score ?? ''}" placeholder="–"
+              ${locked ? 'disabled' : ''} />
+          </div>
+          <div class="team-naam uit">${w.uit_team}</div>
+        </div>`;
     });
+    html += '</div>';
   });
 
-  // ─── VOORSPELLINGEN ───────────────────────────────────────
-  async function laadVoorspellingen() {
-    const container = document.getElementById('wedstrijden-container');
+  container.innerHTML = html;
+  wrap.style.display = 'block';
+}
 
-    // Bestaande extra voorspellingen laden
-    const { data: extra } = await db.from('extra_voorspellingen')
-      .select('*').eq('deelnemer_id', huidigeDeelnemer.id).single();
-    if (extra) {
-      document.getElementById('input-kampioen').value = extra.kampioen;
-      document.getElementById('input-topscorer').value = extra.topscorer;
-    }
-
-    // Wedstrijden laden
-    const { data: wedstrijden } = await db.from('wedstrijden').select('*').order('speeldatum');
-    const { data: mijnVoorspellingen } = await db.from('voorspellingen')
-      .select('*').eq('deelnemer_id', huidigeDeelnemer.id);
-
-    if (!wedstrijden || wedstrijden.length === 0) {
-      container.innerHTML = `<div class="kaart"><p class="leeg">Er zijn nog geen wedstrijden toegevoegd door de admin.</p></div>`;
-      return;
-    }
-
-    const voorspelMap = {};
-    (mijnVoorspellingen || []).forEach(v => voorspelMap[v.wedstrijd_id] = v);
-
-    const fases = ['groep', 'achtste', 'kwart', 'halve', 'finale'];
-    const faseNamen = { groep: 'Groepsfase', achtste: 'Achtste finale', kwart: 'Kwartfinale', halve: 'Halve finale', finale: 'Finale' };
-
-    let html = '';
-    fases.forEach(fase => {
-      const lijst = wedstrijden.filter(w => w.fase === fase);
-      if (!lijst.length) return;
-      html += `<p class="sectie-titel">${faseNamen[fase]}</p><div class="kaart">`;
-      lijst.forEach(w => {
-        const v = voorspelMap[w.id] || {};
-        const gespeeld = w.gespeeld;
-        html += `
-          <div class="wedstrijd-rij" data-id="${w.id}">
-            <div class="team thuis">${w.thuis_team}</div>
-            <div class="score-inputs">
-              <input class="score-input" type="number" min="0" max="20"
-                data-wid="${w.id}" data-kant="thuis"
-                value="${v.thuis_score ?? ''}"
-                ${gespeeld ? 'disabled title="Wedstrijd gespeeld"' : ''} />
-              <span class="score-divider">–</span>
-              <input class="score-input" type="number" min="0" max="20"
-                data-wid="${w.id}" data-kant="uit"
-                value="${v.uit_score ?? ''}"
-                ${gespeeld ? 'disabled title="Wedstrijd gespeeld"' : ''} />
-            </div>
-            <div class="team uit">${w.uit_team}</div>
-          </div>`;
-      });
-      html += `</div>`;
-    });
-
-    html += `<button class="btn-primary" id="btn-opslaan-voorspellingen" style="margin-top:1rem">💾 Alle voorspellingen opslaan</button>
-             <div class="succes" id="voorspel-succes"></div>`;
-
-    container.innerHTML = html;
-
-    document.getElementById('btn-opslaan-voorspellingen').addEventListener('click', slaVoorspellingenOp);
-  }
-
-  async function slaVoorspellingenOp() {
-    const btn = document.getElementById('btn-opslaan-voorspellingen');
-    btn.disabled = true; btn.textContent = 'Bezig...';
-
-    const inputs = document.querySelectorAll('.score-input:not([disabled])');
-    const perWedstrijd = {};
-    inputs.forEach(inp => {
-      const wid = inp.dataset.wid;
-      if (!perWedstrijd[wid]) perWedstrijd[wid] = {};
-      perWedstrijd[wid][inp.dataset.kant] = inp.value !== '' ? parseInt(inp.value) : null;
-    });
-
-    const rijen = Object.entries(perWedstrijd)
-      .filter(([_, v]) => v.thuis !== null && v.uit !== null)
-      .map(([wid, v]) => ({
-        deelnemer_id: huidigeDeelnemer.id,
-        wedstrijd_id: parseInt(wid),
-        thuis_score: v.thuis,
-        uit_score: v.uit
-      }));
-
-    if (rijen.length > 0) {
-      await db.from('voorspellingen').upsert(rijen, { onConflict: 'deelnemer_id,wedstrijd_id' });
-    }
-
-    btn.disabled = false; btn.textContent = '💾 Alle voorspellingen opslaan';
-    const s = document.getElementById('voorspel-succes');
-    s.textContent = '✓ Opgeslagen!';
-    setTimeout(() => s.textContent = '', 3000);
-  }
-
-  document.getElementById('btn-opslaan-extra').addEventListener('click', async () => {
-    const kampioen = document.getElementById('input-kampioen').value.trim();
-    const topscorer = document.getElementById('input-topscorer').value.trim();
-    if (!kampioen || !topscorer) return;
-
-    await db.from('extra_voorspellingen').upsert(
-      { deelnemer_id: huidigeDeelnemer.id, kampioen, topscorer },
-      { onConflict: 'deelnemer_id' }
-    );
-    const s = document.getElementById('extra-succes');
-    s.textContent = '✓ Opgeslagen!';
-    setTimeout(() => s.textContent = '', 3000);
+document.getElementById('btn-opslaan-alles').addEventListener('click', async () => {
+  const btn = document.getElementById('btn-opslaan-alles');
+  btn.disabled = true; btn.textContent = 'Opslaan...';
+  const inputs = document.querySelectorAll('.score-in:not([disabled])');
+  const perW = {};
+  inputs.forEach(inp => {
+    if (!perW[inp.dataset.wid]) perW[inp.dataset.wid] = {};
+    perW[inp.dataset.wid][inp.dataset.kant] = inp.value !== '' ? parseInt(inp.value) : null;
   });
+  const rijen = Object.entries(perW)
+    .filter(([_, v]) => v.thuis !== null && v.uit !== null)
+    .map(([wid, v]) => ({ deelnemer_id: deelnemer.id, wedstrijd_id: parseInt(wid), thuis_score: v.thuis, uit_score: v.uit }));
+  if (rijen.length) await db.from('voorspellingen').upsert(rijen, { onConflict: 'deelnemer_id,wedstrijd_id' });
+  btn.disabled = false; btn.textContent = '💾 Alle voorspellingen opslaan';
+  const s = document.getElementById('voorspel-succes');
+  s.textContent = `✓ ${rijen.length} voorspelling(en) opgeslagen!`;
+  setTimeout(() => s.textContent = '', 3000);
+});
 
-  // ─── STAND ────────────────────────────────────────────────
-  async function laadStand() {
-    const container = document.getElementById('stand-container');
-    container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+document.getElementById('btn-opslaan-extra').addEventListener('click', async () => {
+  const kampioen  = document.getElementById('input-kampioen').value.trim();
+  const topscorer = document.getElementById('input-topscorer').value.trim();
+  if (!kampioen || !topscorer) return;
+  await db.from('extra_voorspellingen').upsert(
+    { deelnemer_id: deelnemer.id, kampioen, topscorer },
+    { onConflict: 'deelnemer_id' }
+  );
+  const s = document.getElementById('extra-succes');
+  s.textContent = '✓ Opgeslagen!';
+  setTimeout(() => s.textContent = '', 3000);
+});
 
-    const { data: deelnemers } = await db.from('deelnemers').select('*');
-    const { data: wedstrijden } = await db.from('wedstrijden').select('*').eq('gespeeld', true);
-    const { data: alleVoorspellingen } = await db.from('voorspellingen').select('*');
-    const { data: extraVoorspellingen } = await db.from('extra_voorspellingen').select('*');
+// ─── VERGELIJK ────────────────────────────────────────────────────────────────
+async function laadVergelijk() {
+  const container = document.getElementById('vergelijk-container');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
 
-    if (!deelnemers || deelnemers.length === 0) {
-      container.innerHTML = '<p class="leeg">Nog geen deelnemers.</p>'; return;
-    }
+  const { data: wedstrijden } = await db.from('wedstrijden').select('*').eq('gespeeld', true).order('speeldatum');
+  const { data: mijnV } = await db.from('voorspellingen').select('*').eq('deelnemer_id', deelnemer.id);
 
-    // Punten berekenen
-    const puntenMap = {};
-    deelnemers.forEach(d => puntenMap[d.id] = 0);
+  if (!wedstrijden || !wedstrijden.length) {
+    container.innerHTML = '<p class="leeg">Er zijn nog geen wedstrijden gespeeld.</p>';
+    return;
+  }
 
-    (alleVoorspellingen || []).forEach(v => {
-      const w = (wedstrijden || []).find(x => x.id === v.wedstrijd_id);
-      if (!w) return;
+  const vMap = {};
+  (mijnV || []).forEach(v => vMap[v.wedstrijd_id] = v);
+
+  let totalePunten = 0;
+  let html = '';
+
+  wedstrijden.forEach(w => {
+    const v = vMap[w.id];
+    let punten = 0;
+    let puntClass = 'punt-0';
+    let puntLabel = '0';
+
+    if (v) {
       if (v.thuis_score === w.thuis_score && v.uit_score === w.uit_score) {
-        puntenMap[v.deelnemer_id] = (puntenMap[v.deelnemer_id] || 0) + 3;
+        punten = 3; puntClass = 'punt-3'; puntLabel = '+3';
       } else {
-        const uitslag = w.thuis_score > w.uit_score ? 'thuis' : w.uit_score > w.thuis_score ? 'uit' : 'gelijk';
-        const voorspeld = v.thuis_score > v.uit_score ? 'thuis' : v.uit_score > v.thuis_score ? 'uit' : 'gelijk';
-        if (uitslag === voorspeld) puntenMap[v.deelnemer_id] = (puntenMap[v.deelnemer_id] || 0) + 1;
+        const echt = w.thuis_score > w.uit_score ? 'thuis' : w.uit_score > w.thuis_score ? 'uit' : 'gelijk';
+        const mijn = v.thuis_score > v.uit_score ? 'thuis' : v.uit_score > v.thuis_score ? 'uit' : 'gelijk';
+        if (echt === mijn) { punten = 1; puntClass = 'punt-1'; puntLabel = '+1'; }
       }
-    });
-
-    // Extra punten (kampioen/topscorer) – vereisen een echte winnaar in admin
-    // Voor nu: je kan dit later uitbreiden
-
-    const gesorteerd = deelnemers
-      .map(d => ({ ...d, punten: puntenMap[d.id] || 0 }))
-      .sort((a, b) => b.punten - a.punten);
-
-    let html = `<table class="stand-tabel">
-      <thead><tr><th>#</th><th>Naam</th><th>Punten</th></tr></thead><tbody>`;
-    gesorteerd.forEach((d, i) => {
-      const plekClass = i === 0 ? 'plek-1' : i === 1 ? 'plek-2' : i === 2 ? 'plek-3' : '';
-      html += `<tr>
-        <td class="plek ${plekClass}">${i + 1}</td>
-        <td>${d.naam}${d.id === huidigeDeelnemer.id ? ' <span style="color:var(--groen);font-size:.8rem">(jij)</span>' : ''}</td>
-        <td><span class="punten-badge">${d.punten}</span></td>
-      </tr>`;
-    });
-    html += '</tbody></table>';
-    container.innerHTML = html;
-  }
-
-  // ─── ADMIN ────────────────────────────────────────────────
-  function laadAdminScherm() {
-    if (adminIngelogd) {
-      document.getElementById('admin-wachtwoord-scherm').style.display = 'none';
-      document.getElementById('admin-inhoud').style.display = 'block';
-      laadAdminWedstrijden();
-    } else {
-      document.getElementById('admin-wachtwoord-scherm').style.display = 'block';
-      document.getElementById('admin-inhoud').style.display = 'none';
     }
+    totalePunten += punten;
+
+    html += `
+      <div class="vergelijk-rij">
+        <div class="vergelijk-team thuis">${w.thuis_team}</div>
+        <div class="vergelijk-score score-echt">${w.thuis_score}–${w.uit_score}</div>
+        <div class="vergelijk-punt ${puntClass}">${puntLabel}</div>
+        <div class="vergelijk-score score-mijn">${v ? `${v.thuis_score}–${v.uit_score}` : '?'}</div>
+        <div class="vergelijk-team uit">${w.uit_team}</div>
+      </div>`;
+  });
+
+  html = `<p style="color:var(--tekst-dim);font-size:.8rem;margin-bottom:.8rem">
+    <span style="background:rgba(255,214,0,.15);color:var(--geel);padding:.15rem .5rem;border-radius:6px;margin-right:.4rem">Echte uitslag</span>
+    <span style="background:var(--kaart2);padding:.15rem .5rem;border-radius:6px">Jouw voorspelling</span>
+  </p>` + html;
+  html += `<div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--rand);display:flex;justify-content:space-between;align-items:center">
+    <span style="font-weight:700">Totaal uit gespeelde wedstrijden</span>
+    <span style="font-family:'Archivo Black',sans-serif;font-size:1.5rem;color:var(--oranje)">${totalePunten} pt</span>
+  </div>`;
+
+  container.innerHTML = html;
+}
+
+// ─── STAND ────────────────────────────────────────────────────────────────────
+async function laadStand() {
+  document.getElementById('stand-container').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  document.getElementById('bonus-container').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+  const { data: deelnemers } = await db.from('deelnemers').select('*');
+  const { data: wedstrijden } = await db.from('wedstrijden').select('*').eq('gespeeld', true);
+  const { data: alleV } = await db.from('voorspellingen').select('*');
+  const { data: extraV } = await db.from('extra_voorspellingen').select('*');
+  const { data: official } = await db.from('admin_settings').select('*').eq('sleutel', 'kampioen').single();
+  const { data: officialTS } = await db.from('admin_settings').select('*').eq('sleutel', 'topscorer').single();
+
+  if (!deelnemers || !deelnemers.length) {
+    document.getElementById('stand-container').innerHTML = '<p class="leeg">Nog geen deelnemers.</p>';
+    return;
   }
 
-  document.getElementById('btn-admin-inloggen').addEventListener('click', () => {
-    const ww = document.getElementById('admin-ww-input').value;
-    if (ww === ADMIN_WACHTWOORD) {
-      adminIngelogd = true;
-      laadAdminScherm();
+  const puntenMap = {};
+  const exactMap  = {};
+  deelnemers.forEach(d => { puntenMap[d.id] = 0; exactMap[d.id] = 0; });
+
+  (alleV || []).forEach(v => {
+    const w = (wedstrijden || []).find(x => x.id === v.wedstrijd_id);
+    if (!w) return;
+    if (v.thuis_score === w.thuis_score && v.uit_score === w.uit_score) {
+      puntenMap[v.deelnemer_id] += 3; exactMap[v.deelnemer_id]++;
     } else {
-      document.getElementById('admin-fout').textContent = 'Verkeerd wachtwoord.';
+      const echt = w.thuis_score > w.uit_score ? 'thuis' : w.uit_score > w.thuis_score ? 'uit' : 'gelijk';
+      const mijn = v.thuis_score > v.uit_score ? 'thuis' : v.uit_score > v.thuis_score ? 'uit' : 'gelijk';
+      if (echt === mijn) puntenMap[v.deelnemer_id] += 1;
     }
   });
 
-  document.getElementById('btn-wedstrijd-toevoegen').addEventListener('click', async () => {
-    const thuis = document.getElementById('w-thuis').value.trim();
-    const uit = document.getElementById('w-uit').value.trim();
-    const datum = document.getElementById('w-datum').value;
-    const fase = document.getElementById('w-fase').value;
-    if (!thuis || !uit) return;
-
-    const { error } = await db.from('wedstrijden').insert({
-      thuis_team: thuis, uit_team: uit,
-      speeldatum: datum || null, fase
-    });
-
-    if (!error) {
-      document.getElementById('w-thuis').value = '';
-      document.getElementById('w-uit').value = '';
-      const s = document.getElementById('wedstrijd-succes');
-      s.textContent = '✓ Wedstrijd toegevoegd!';
-      setTimeout(() => s.textContent = '', 3000);
-      laadAdminWedstrijden();
-      laadVoorspellingen();
-    }
+  // Bonus punten
+  const kampiooen = official?.waarde;
+  const topsc = officialTS?.waarde;
+  (extraV || []).forEach(e => {
+    if (kampiooen && e.kampioen?.toLowerCase() === kampiooen.toLowerCase()) puntenMap[e.deelnemer_id] += 10;
+    if (topsc && e.topscorer?.toLowerCase() === topsc.toLowerCase()) puntenMap[e.deelnemer_id] += 5;
   });
 
-  async function laadAdminWedstrijden() {
-    const lijst = document.getElementById('admin-wedstrijden-lijst');
-    const { data: wedstrijden } = await db.from('wedstrijden').select('*').order('speeldatum');
+  const gesorteerd = deelnemers
+    .map(d => ({ ...d, punten: puntenMap[d.id] || 0, exact: exactMap[d.id] || 0 }))
+    .sort((a, b) => b.punten - a.punten || b.exact - a.exact);
 
-    if (!wedstrijden || !wedstrijden.length) {
-      lijst.innerHTML = '<p class="leeg">Nog geen wedstrijden.</p>'; return;
-    }
-
-    lijst.innerHTML = wedstrijden.map(w => `
-      <div class="wedstrijd-lijst-item" id="rij-${w.id}">
+  const plekIcons = ['🥇','🥈','🥉'];
+  let html = '';
+  gesorteerd.forEach((d, i) => {
+    const isJij = d.id === deelnemer.id;
+    const plekClass = i < 3 ? `plek-${i+1}` : 'plek-rest';
+    html += `
+      <div class="stand-rij">
+        <div class="stand-plek ${plekClass}">${i < 3 ? plekIcons[i] : i+1}</div>
+        <div class="stand-avatar" style="background:${(d.avatar_kleur||'#FF6B00')}33;border-color:${d.avatar_kleur||'#FF6B00'}">${d.avatar_emoji||'⚽'}</div>
+        <div class="stand-naam">
+          ${d.naam}${isJij ? '<span class="jij">(jij)</span>' : ''}
+        </div>
         <div>
-          <span class="badge-fase">${w.fase}</span>
-          <strong style="margin-left:.5rem">${w.thuis_team} – ${w.uit_team}</strong>
+          <div class="stand-punten">${d.punten}</div>
+          <div class="stand-details">${d.exact} exact</div>
         </div>
-        <div class="score-inline">
-          <input type="number" min="0" max="20" value="${w.thuis_score ?? ''}" placeholder="0" id="s-thuis-${w.id}" ${w.gespeeld ? '' : ''} />
-          <span>–</span>
-          <input type="number" min="0" max="20" value="${w.uit_score ?? ''}" placeholder="0" id="s-uit-${w.id}" />
-          <button class="btn-small" onclick="slaUitslagOp(${w.id})">✓</button>
-          <button class="btn-danger" onclick="verwijderWedstrijd(${w.id})">✕</button>
-        </div>
+      </div>`;
+  });
+  document.getElementById('stand-container').innerHTML = html;
+
+  // Bonus tabel
+  const exMap = {};
+  (extraV || []).forEach(e => exMap[e.deelnemer_id] = e);
+  let bHtml = `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;font-size:.8rem;color:var(--tekst-dim);padding:.5rem 0;border-bottom:1px solid var(--rand)">
+    <div>Naam</div><div>Kampioen</div><div>Topscorer</div></div>`;
+  gesorteerd.forEach(d => {
+    const e = exMap[d.id];
+    bHtml += `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;padding:.6rem 0;border-bottom:1px solid var(--rand);font-size:.85rem">
+      <div style="font-weight:700">${d.naam}</div>
+      <div>${e?.kampioen || '–'}</div>
+      <div>${e?.topscorer || '–'}</div>
+    </div>`;
+  });
+  document.getElementById('bonus-container').innerHTML = bHtml;
+}
+
+// ─── ADMIN ────────────────────────────────────────────────────────────────────
+function laadAdminScherm() {
+  if (adminIn) {
+    document.getElementById('admin-login-kaart').style.display = 'none';
+    document.getElementById('admin-paneel').style.display = 'block';
+    laadAdminLijst();
+    laadAdminBonus();
+  } else {
+    document.getElementById('admin-login-kaart').style.display = 'block';
+    document.getElementById('admin-paneel').style.display = 'none';
+  }
+}
+
+document.getElementById('btn-admin-in').addEventListener('click', () => {
+  if (document.getElementById('admin-ww').value === ADMIN_WW) {
+    adminIn = true; laadAdminScherm();
+  } else {
+    document.getElementById('admin-fout').textContent = 'Verkeerd wachtwoord.';
+  }
+});
+
+document.getElementById('btn-w-toevoegen').addEventListener('click', async () => {
+  const thuis = document.getElementById('w-thuis').value.trim();
+  const uit   = document.getElementById('w-uit').value.trim();
+  const datum = document.getElementById('w-datum').value;
+  const fase  = document.getElementById('w-fase').value;
+  if (!thuis || !uit) return;
+  await db.from('wedstrijden').insert({ thuis_team: thuis, uit_team: uit, speeldatum: datum||null, fase });
+  document.getElementById('w-thuis').value = '';
+  document.getElementById('w-uit').value   = '';
+  const s = document.getElementById('w-succes');
+  s.textContent = '✓ Wedstrijd toegevoegd!';
+  setTimeout(() => s.textContent = '', 3000);
+  laadAdminLijst();
+  laadVoorspellingen();
+});
+
+async function laadAdminLijst() {
+  const el = document.getElementById('admin-lijst');
+  const { data: wl } = await db.from('wedstrijden').select('*').order('speeldatum');
+  if (!wl || !wl.length) { el.innerHTML = '<p class="leeg">Nog geen wedstrijden.</p>'; return; }
+  el.innerHTML = wl.map(w => `
+    <div class="admin-w-rij">
+      <div style="flex:1;min-width:0">
+        <span class="fase-chip">${w.fase}</span>
+        <strong style="margin-left:.5rem">${w.thuis_team} – ${w.uit_team}</strong>
+        ${w.gespeeld ? `<span style="color:var(--groen);font-size:.75rem;margin-left:.4rem">✓ gespeeld</span>` : ''}
       </div>
-    `).join('');
-  }
+      <div class="score-invoer">
+        <input type="number" min="0" max="20" value="${w.thuis_score??''}" placeholder="0" id="st-${w.id}" />
+        <span style="color:var(--tekst-dim)">–</span>
+        <input type="number" min="0" max="20" value="${w.uit_score??''}" placeholder="0" id="su-${w.id}" />
+        <button class="btn-klein" onclick="slaUitslagOp(${w.id})">✓</button>
+        <button class="btn-verwijder" onclick="verwijderW(${w.id})">✕</button>
+      </div>
+    </div>`).join('');
+}
 
-  async function slaUitslagOp(wid) {
-    const thuis = document.getElementById(`s-thuis-${wid}`).value;
-    const uit = document.getElementById(`s-uit-${wid}`).value;
-    if (thuis === '' || uit === '') return;
+async function slaUitslagOp(wid) {
+  const t = document.getElementById(`st-${wid}`).value;
+  const u = document.getElementById(`su-${wid}`).value;
+  if (t===''||u==='') return;
+  await db.from('wedstrijden').update({ thuis_score: parseInt(t), uit_score: parseInt(u), gespeeld: true }).eq('id', wid);
+  laadAdminLijst(); laadVoorspellingen();
+}
 
-    await db.from('wedstrijden').update({
-      thuis_score: parseInt(thuis),
-      uit_score: parseInt(uit),
-      gespeeld: true
-    }).eq('id', wid);
+async function verwijderW(wid) {
+  if (!confirm('Wedstrijd verwijderen?')) return;
+  await db.from('voorspellingen').delete().eq('wedstrijd_id', wid);
+  await db.from('wedstrijden').delete().eq('id', wid);
+  laadAdminLijst(); laadVoorspellingen();
+}
 
-    laadAdminWedstrijden();
-    laadStand();
-  }
+async function laadAdminBonus() {
+  const { data: k } = await db.from('admin_settings').select('*').eq('sleutel', 'kampioen').single();
+  const { data: t } = await db.from('admin_settings').select('*').eq('sleutel', 'topscorer').single();
+  if (k) document.getElementById('admin-kampioen').value = k.waarde || '';
+  if (t) document.getElementById('admin-topscorer').value = t.waarde || '';
+}
 
-  async function verwijderWedstrijd(wid) {
-    if (!confirm('Wedstrijd verwijderen?')) return;
-    await db.from('voorspellingen').delete().eq('wedstrijd_id', wid);
-    await db.from('wedstrijden').delete().eq('id', wid);
-    laadAdminWedstrijden();
-    laadVoorspellingen();
-  }
+document.getElementById('btn-admin-bonus').addEventListener('click', async () => {
+  const k = document.getElementById('admin-kampioen').value.trim();
+  const t = document.getElementById('admin-topscorer').value.trim();
+  await db.from('admin_settings').upsert({ sleutel: 'kampioen', waarde: k }, { onConflict: 'sleutel' });
+  await db.from('admin_settings').upsert({ sleutel: 'topscorer', waarde: t }, { onConflict: 'sleutel' });
+  const s = document.getElementById('bonus-succes');
+  s.textContent = '✓ Opgeslagen!';
+  setTimeout(() => s.textContent = '', 3000);
+});
 </script>
 </body>
 </html>
